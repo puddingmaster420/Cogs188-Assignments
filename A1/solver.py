@@ -382,11 +382,17 @@ if __name__ == "__main__":
     print("Start Node:", start_node)
     print("Goal Node :", goal_node)
 
-    # Test BFS (will return None until implemented)
-    path_bfs = bfs(start_node, goal_node)
-    print("BFS Path:", path_bfs)
-
+    # Test BFS
     # Similarly test DFS, A*, etc.
-    # path_dfs = dfs(start_node, goal_node)
-    # path_astar = astar(start_node, goal_node)
-    # ...
+    path_dfs = dfs(start_node, goal_node)
+    print("DFS Path:", path_dfs)
+
+    path_astar = astar(start_node, goal_node)
+    print("A* Path:", path_astar)
+
+    path_bi = bidirectional_search(start_node, goal_node)
+    print("Bidirectional Path:", path_bi)
+
+    path_sa = simulated_annealing(start_node, goal_node)
+    print("Simulated Annealing Path:", path_sa)
+    
