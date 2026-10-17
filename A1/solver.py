@@ -1,4 +1,3 @@
-pip install numpy pygame
 import math
 import random
 from collections import deque, defaultdict
