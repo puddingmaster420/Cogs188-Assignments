@@ -16,7 +16,9 @@ def update(q: float, r: float, k: int) -> float:
     float: The updated Q-value.
     """
     # Note: since k is the number of times the action has been taken before this update, we need to add 1 to k before using it in the formula.
-    # TODO
+    k += 1
+    alpha = 1.0 / k
+    return q + alpha * (r - q)
 
 
 def greedy(q_estimate: np.ndarray) -> int:
@@ -29,7 +31,9 @@ def greedy(q_estimate: np.ndarray) -> int:
     Returns:
     int: The index of the action with the highest Q-value.
     """
-    # TODO
+    max_q = np.max(q_estimate)
+    best_actions = np.flatnonzero(q_estimate == max_q)
+    return int(np.random.choice(best_actions))
 
 
 def egreedy(q_estimate: np.ndarray, epsilon: float) -> int:
@@ -44,7 +48,15 @@ def egreedy(q_estimate: np.ndarray, epsilon: float) -> int:
     Returns:
     int: The index of the selected action.
     """
-    # TODO
+    n_arms = len(q_estimate)
+    if np.random.rand() < epsilon:
+        greedy_action = greedy(q_estimate)
+        other_actions = [a for a in range(n_arms) if a != greedy_action]
+        if other_actions:
+            return int(np.random.choice(other_actions))
+        return greedy_action
+    else:
+        return greedy(q_estimate)
 
 
 def empirical_egreedy(epsilon: float, n_trials: int, n_arms: int, n_plays: int) -> List[List[float]]:
@@ -65,6 +77,21 @@ def empirical_egreedy(epsilon: float, n_trials: int, n_arms: int, n_plays: int) 
     """
     rewards = []  # stores the rewards for each trial
 
-    # TODO
+    for _ in range(n_trials):
+        true_rewards = np.random.normal(size=n_arms)
+        q_estimate = np.zeros(n_arms)
+        counts = np.zeros(n_arms, dtype=int)
+        trial_rewards = []
+        
+        for _ in range(n_plays):
+            action = egreedy(q_estimate, epsilon)
+            reward = np.random.normal(loc=true_rewards[action], scale=1.0)
+            trial_rewards.append(reward)
+            
+            # Update Q-value and increment action count
+            q_estimate[action] = update(q_estimate[action], reward, counts[action])
+            counts[action] += 1
+            
+        rewards.append(trial_rewards)
 
     return rewards
